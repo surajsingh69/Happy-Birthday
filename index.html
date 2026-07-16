@@ -988,15 +988,22 @@ const memories = [
   { cap: 'happy days', r: '-3deg', img: '2.jpeg' },
   { cap: 'funny but cute', r: '2deg', img: '1.jpeg' },
   { cap: 'close to you', r: '-4deg', img: '15.jpeg' },
-  { cap: 'just us', r: '3deg', img: '16.jpeg' },
-  { cap: 'mero budi', r: '-2deg', img: '17.jpeg' },
+  { cap: 'just us', r: '3deg', video: '9.mp4' },
+  { cap: 'mero budi', r: '-2deg', video: '5.mp4' },
 ];
 const polaroidsWrap = document.getElementById('polaroids');
 memories.forEach(m => {
   const p = document.createElement('div');
   p.className = 'polaroid';
   p.style.setProperty('--r', m.r);
-  const frameContent = m.img ? `<img src="${m.img}" alt="${m.cap}">` : memIcon;
+  let frameContent;
+  if (m.video) {
+    frameContent = `<video src="${m.video}" muted loop playsinline autoplay style="width:100%;height:100%;object-fit:cover;"></video>`;
+  } else if (m.img) {
+    frameContent = `<img src="${m.img}" alt="${m.cap}">`;
+  } else {
+    frameContent = memIcon;
+  }
   p.innerHTML = `<div class="tape"></div><div class="frame">${frameContent}</div><span class="cap">${m.cap}</span>`;
   polaroidsWrap.appendChild(p);
 });
