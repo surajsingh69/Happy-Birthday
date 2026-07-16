@@ -668,8 +668,7 @@
   <h2 class="reveal d1">our little moments</h2>
   <div style="height:14px"></div>
   <div class="polaroids" id="polaroids"></div>
-  <p class="memo-note reveal d2">(placeholders for now — send me our real photos and I'll set them here)</p>
-</section>
+ </section>
 
 <!-- LETTER -->
 <section id="letter">
@@ -975,20 +974,31 @@ reasons.forEach((r, i) => {
 /* ================= MEMORY PLACEHOLDERS ================= */
 const memIcon = '<svg viewBox="0 0 40 40" fill="none" stroke="#F6EEE3" stroke-width="1"><path d="M20,34 C10,26 4,18 4,12 C4,6 9,2 14,4 C17,5 19,8 20,10 C21,8 23,5 26,4 C31,2 36,6 36,12 C36,18 30,26 20,34 Z"/></svg>';
 const memories = [
-  { cap: 'the door', r: '-4deg' },
-  { cap: 'pashupati', r: '3deg' },
-  { cap: 'our usual spot', r: '-2deg' },
-  { cap: 'add a photo here', r: '4deg' },
+  { cap: 'the door', r: '-4deg', img: '1.jpeg' },
+  { cap: 'pashupati', r: '3deg', img: '2.jpeg' },
+  { cap: 'our usual spot', r: '-2deg', img: '3.jpeg' },
+  { cap: 'us', r: '4deg', img: '4.jpeg' },
+  { cap: 'together', r: '-3deg', img: '6.jpeg' },
+  { cap: 'that day', r: '2deg', img: '7.jpeg' },
+  { cap: 'memories', r: '-5deg', img: '8.jpeg' },
+  { cap: 'you and me', r: '3deg', img: '10.jpeg' },
+  { cap: 'this moment', r: '-2deg', img: '11.jpeg' },
+  { cap: 'always', r: '4deg', img: '12.jpeg' },
+  { cap: 'happy days', r: '-3deg', img: '13.jpeg' },
+  { cap: 'our story', r: '2deg', img: '14.jpeg' },
+  { cap: 'close to you', r: '-4deg', img: '15.jpeg' },
+  { cap: 'just us', r: '3deg', img: '16.jpeg' },
+  { cap: 'mero budi', r: '-2deg', img: '17.jpeg' },
 ];
 const polaroidsWrap = document.getElementById('polaroids');
 memories.forEach(m => {
   const p = document.createElement('div');
   p.className = 'polaroid';
   p.style.setProperty('--r', m.r);
-  p.innerHTML = `<div class="tape"></div><div class="frame">${memIcon}</div><span class="cap">${m.cap}</span>`;
+  const frameContent = m.img ? `<img src="${m.img}" alt="${m.cap}">` : memIcon;
+  p.innerHTML = `<div class="tape"></div><div class="frame">${frameContent}</div><span class="cap">${m.cap}</span>`;
   polaroidsWrap.appendChild(p);
 });
-
 /* ================= LETTER ================= */
 const envelopeWrap = document.getElementById('envelopeWrap');
 const letterPaper = document.getElementById('letterPaper');
