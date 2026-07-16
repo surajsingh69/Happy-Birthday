@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday, Mero Budi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void: #150F26;
+    --dusk: #271B47;
+    --dusk-2: #3A2350;
+    --twilight: #4E2A4C;
+    --ember: #5C2E2E;
+    --rose: #E39FB0;
+    --rose-dim: #9C6478;
+    --gold: #E4BC7C;
+    --gold-dim: #8C7250;
+    --marigold: #E8A24C;
+    --moonlight: #F6EEE3;
+    --dim: rgba(246,238,227,0.58);
+    --faint: rgba(246,238,227,0.32);
+    --glass: rgba(246,238,227,0.05);
+    --glass-strong: rgba(246,238,227,0.09);
+    --glass-border: rgba(228,188,124,0.28);
+  }
+
+  * { box-sizing: border-box; margin:0; padding:0; }
+  html { scroll-behavior: smooth; }
+
+  body{
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    background: var(--void);
+    color: var(--moonlight);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,h2,h3,.display{ font-family: 'Fraunces', serif; font-weight: 500; }
+  .display-italic{ font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; }
+  .script{ font-family: 'Caveat', cursive; font-weight: 600; }
+
+  ::selection{ background: var(--rose); color: var(--void); }
+
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+  }
+
+  /* ---------- background layers ---------- */
+  #skyGradient{
+    position: fixed; inset: 0;
+    z-index: 0;
+    background: linear-gradient(180deg,
+      var(--void) 0%,
+      var(--dusk) 24%,
+      var(--dusk-2) 46%,
+      var(--twilight) 66%,
+      var(--ember) 84%,
+      #3A1E24 100%);
+  }
+  #starsCanvas, #particleCanvas{
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+  #particleCanvas{ z-index: 90; }
+  #vignette{
+    position: fixed; inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(10,7,20,0.35) 100%);
+  }
+
+  /* ---------- scroll progress ---------- */
+  #progressBar{
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--gold), var(--rose));
+    z-index: 60;
+    transition: width 0.1s linear;
+  }
+
+  /* ---------- constellation tracker widget ---------- */
+  #constellationWidget{
+    position: fixed;
+    top: 22px; right: 22px;
+    width: 84px; height: 84px;
+    z-index: 55;
+    opacity: 0.9;
+  }
+  #constellationWidget svg{ width: 100%; height: 100%; overflow: visible; }
+  #heartStar{
+    filter: drop-shadow(0 0 4px var(--gold));
+  }
+
+  /* ---------- music toggle ---------- */
+  #musicWrap{
+    position: fixed;
+    top: 22px; left: 22px;
+    z-index: 55;
+  }
+  #musicBtn{
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-strong);
+    backdrop-filter: blur(6px);
+    color: var(--gold);
+    font-size: 18px;
+    cursor: pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition: all 0.3s ease;
+  }
+  #musicBtn:hover{ background: rgba(228,188,124,0.15); transform: scale(1.06); }
+  #musicLabel{
+    position: absolute;
+    top: 52px; left: 0;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .bars{ display:flex; gap:2px; align-items:flex-end; height: 14px; }
+  .bars span{
+    width: 2.5px;
+    background: var(--gold);
+    border-radius: 2px;
+    height: 4px;
+    transition: height 0.2s ease;
+  }
+  #musicBtn.playing .bars span{ animation: eq 0.9s ease-in-out infinite; }
+  #musicBtn.playing .bars span:nth-child(1){ animation-delay: 0s; }
+  #musicBtn.playing .bars span:nth-child(2){ animation-delay: 0.2s; }
+  #musicBtn.playing .bars span:nth-child(3){ animation-delay: 0.4s; }
+  @keyframes eq{
+    0%,100%{ height: 4px; }
+    50%{ height: 15px; }
+  }
+  #musicBtn:not(.playing) .bars span{ height: 4px; }
+  #musicBtn .note{ display: none; }
+  #musicBtn:not(.playing) .note{ display:block; }
+  #musicBtn.playing .note{ display:none; }
+  #musicBtn.playing .bars{ display:flex; }
+  #musicBtn:not(.playing) .bars{ display:none; }
+
+  /* ---------- sections ---------- */
+  section{
+    position: relative;
+    z-index: 3;
+    min-height: 100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 120px 24px;
+  }
+
+  .chapter-label{
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.9s ease;
+    margin-bottom: 22px;
+  }
+  .reveal{
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  .in-view .reveal, .in-view.chapter-label{ opacity: 1; transform: translateY(0); }
+  .reveal.d1{ transition-delay: 0.1s; }
+  .reveal.d2{ transition-delay: 0.25s; }
+  .reveal.d3{ transition-delay: 0.4s; }
+
+  /* HERO */
+  #hero h1{
+    font-size: clamp(48px, 10vw, 116px);
+    line-height: 1;
+    letter-spacing: -1px;
+    background: linear-gradient(180deg, var(--moonlight), var(--rose));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  #hero .kicker{
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  #hero .sub{
+    margin-top: 26px;
+    font-size: 17px;
+    color: var(--dim);
+    max-width: 440px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+  .scroll-cue{
+    margin-top: 70px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .scroll-cue .line{
+    width: 1px; height: 34px;
+    background: linear-gradient(180deg, var(--gold), transparent);
+    margin: 10px auto 0;
+    animation: pulse-line 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse-line{
+    0%,100%{ opacity: 0.3; } 50%{ opacity: 1; }
+  }
+
+  /* ---------- THE DOOR (school memory, interactive) ---------- */
+  #door .doorScene{
+    position: relative;
+    width: min(320px, 78vw);
+    height: 400px;
+    margin-bottom: 40px;
+  }
+  .doorFrame{
+    position: absolute; inset: 0;
+    border: 10px solid #2A1D1A;
+    background: linear-gradient(180deg, #4a2f27, #3a231e);
+    border-radius: 3px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 40px rgba(0,0,0,0.4);
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .doorInner{
+    position: absolute; inset: 8px;
+    background:
+      linear-gradient(90deg, transparent 0 48%, rgba(0,0,0,0.5) 48% 52%, transparent 52% 100%),
+      repeating-linear-gradient(180deg, #5a3a30 0 3px, #4c3128 3px 6px);
+    display: flex;
+  }
+  .doorLeaf{
+    width: 50%; height: 100%;
+    transition: transform 1.1s cubic-bezier(.2,.8,.2,1);
+    background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent 30%);
+  }
+  .doorLeaf.right{ margin-left: auto; transform-origin: right center; }
+  .doorLeaf.left{ transform-origin: left center; }
+  .doorScene.peeking .doorLeaf.right{ transform: rotateY(-38deg) translateX(2px); }
+
+  .peekGap{
+    position: absolute;
+    top: 30%; left: 50%;
+    width: 6px; height: 90px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(255,236,200,0.85), rgba(255,236,200,0) 70%);
+    border-radius: 3px;
+    opacity: 0.9;
+    pointer-events: none;
+  }
+  .eyeGlint{
+    position: absolute;
+    top: 42%; left: 50%;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    transform: translate(-50%, -50%) scale(0);
+    box-shadow: 0 0 12px var(--gold);
+    transition: transform 0.5s ease 0.5s;
+    pointer-events: none;
+  }
+  .doorScene.peeking .eyeGlint{ transform: translate(-50%, -50%) scale(1); }
+
+  .doorScene .hallLight{
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 35%, rgba(228,188,124,0.18), transparent 60%);
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  .doorScene.peeking .hallLight{ opacity: 1; }
+
+  #door h2{ font-size: clamp(32px, 5vw, 48px); }
+  #door .hint{ margin-top: 10px; font-size: 13px; letter-spacing: 1px; color: var(--faint); margin-bottom: 8px;}
+  #doorMessage{
+    max-width: 520px;
+    margin-top: 6px;
+    font-size: 19px;
+    line-height: 1.85;
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--moonlight);
+    opacity: 0; max-height: 0; overflow: hidden;
+    transition: all 0.9s ease;
+  }
+  #doorMessage.show{ opacity: 1; max-height: 400px; margin-top: 28px; }
+
+  /* SPARK / GIFT */
+  .orb-wrap{ position: relative; width: 150px; height: 150px; margin-bottom: 44px; cursor: pointer; }
+  .orb{
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff7ec, var(--gold) 40%, var(--rose-dim) 100%);
+    box-shadow: 0 0 40px rgba(228,188,124,0.45), 0 0 80px rgba(227,159,176,0.25);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .orb-wrap:hover .orb{ transform: scale(1.06); box-shadow: 0 0 60px rgba(228,188,124,0.6), 0 0 110px rgba(227,159,176,0.35); }
+  .orb-wrap.opened .orb{ opacity: 0; transform: scale(1.8); transition: all 0.6s ease; }
+  #spark h2{ font-size: clamp(34px, 5vw, 50px); }
+  #spark .hint{ margin-top: 10px; font-size: 13px; letter-spacing: 1px; color: var(--faint); }
+  #sparkMessage{
+    max-width: 500px;
+    margin-top: 8px;
+    font-size: 20px;
+    line-height: 1.8;
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--moonlight);
+    opacity: 0; max-height: 0; overflow: hidden;
+    transition: all 0.8s ease;
+  }
+  #sparkMessage.show{ opacity: 1; max-height: 300px; margin-top: 28px; }
+
+  /* ---------- PASHUPATI (temple memory) ---------- */
+  #temple{
+    background: radial-gradient(ellipse at 50% 30%, rgba(232,162,76,0.06), transparent 60%);
+  }
+  .templeSilhouette{
+    width: min(360px, 80vw);
+    height: 140px;
+    margin-bottom: 8px;
+    opacity: 0.9;
+  }
+  #temple h2{ font-size: clamp(32px, 5vw, 48px); }
+  #temple .hint{ margin-top: 10px; font-size: 13px; letter-spacing: 1px; color: var(--faint); margin-bottom: 30px;}
+
+  .incense-wrap{ position: relative; width: 60px; height: 90px; margin: 0 auto 30px; cursor: pointer; }
+  .incense-stick{
+    position: absolute; bottom: 0; left: 50%;
+    width: 3px; height: 60px;
+    background: linear-gradient(180deg, #C98B4A, #7A4A28);
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+  .incense-tip{
+    position: absolute; top: 26px; left: 50%;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--marigold);
+    transform: translateX(-50%);
+    box-shadow: 0 0 8px var(--marigold);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .incense-wrap.lit .incense-tip{ opacity: 1; }
+
+  #templeText{
+    max-width: 540px;
+    font-size: 19px;
+    line-height: 1.9;
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--moonlight);
+    opacity: 0; max-height: 0; overflow: hidden;
+    transition: all 1s ease;
+  }
+  #templeText.show{ opacity: 1; max-height: 400px; }
+  #temple .hint2{
+    margin-top: 22px; font-size: 12px; color: var(--faint); opacity: 0; transition: opacity 0.6s ease 0.8s;
+  }
+  #temple .hint2.show{ opacity: 1; }
+
+  /* REASONS / CONSTELLATIONS */
+  #reasons h2{ font-size: clamp(34px, 5vw, 50px); }
+  #reasons .sub-text{ margin-top: 12px; color: var(--dim); font-size: 14px; margin-bottom: 54px; }
+  .cards{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+    max-width: 840px;
+    width: 100%;
+  }
+  .card{ perspective: 1200px; height: 190px; cursor: pointer; }
+  .card-inner{
+    position: relative; width:100%; height:100%;
+    transition: transform 0.7s cubic-bezier(.2,.8,.2,1);
+    transform-style: preserve-3d;
+  }
+  .card.flipped .card-inner{ transform: rotateY(180deg); }
+  .card-face{
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    border-radius: 4px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    backdrop-filter: blur(8px);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding: 18px;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .card:hover .card-face{ border-color: var(--gold); background: var(--glass-strong); }
+  .card-face.card-back{ transform: rotateY(180deg); }
+  .card-face svg{ width: 46px; height: 46px; margin-bottom: 14px; }
+  .star-name{ font-family:'Fraunces',serif; font-style: italic; font-size: 14px; color: var(--gold); }
+  .card-back p{ font-size: 14px; line-height: 1.6; color: var(--moonlight); font-weight: 300; }
+
+  /* KEEPSAKES / MEMORIES */
+  #memories h2{ font-size: clamp(34px, 5vw, 50px); margin-bottom: 54px; }
+  .polaroids{
+    display:flex; gap: 22px; flex-wrap: wrap;
+    justify-content:center; max-width: 920px;
+  }
+  .polaroid{
+    background: #F6EEE3;
+    padding: 12px 12px 40px 12px;
+    box-shadow: 0 14px 34px rgba(10,5,20,0.45);
+    width: 180px;
+    transform: rotate(var(--r));
+    transition: transform 0.4s ease;
+    position: relative;
+  }
+  .polaroid:hover{ transform: rotate(0deg) translateY(-6px) scale(1.04); z-index: 5; }
+  .polaroid .tape{
+    position:absolute; top:-10px; left: 50%; transform: translateX(-50%) rotate(-3deg);
+    width: 50px; height: 18px;
+    background: rgba(228,188,124,0.55);
+    opacity: 0.8;
+  }
+  .polaroid .frame{
+    width: 100%; height: 180px;
+    background: linear-gradient(135deg, var(--dusk-2), var(--twilight));
+    display:flex; align-items:center; justify-content:center;
+    overflow: hidden;
+  }
+  .polaroid .frame img{ width: 100%; height: 100%; object-fit: cover; }
+  .polaroid .frame svg{ width: 44px; height: 44px; opacity: 0.85; }
+  .polaroid .cap{
+    display:block; text-align:center; margin-top: 10px;
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 15px; color: var(--void);
+  }
+  .memo-note{ margin-top: 46px; font-size: 13px; color: var(--faint); max-width: 420px; }
+
+  /* LETTER */
+  .envelope-wrap{ margin-bottom: 40px; cursor: pointer; }
+  .envelope{
+    width: 210px; height: 140px;
+    background: linear-gradient(135deg, #E8D9C8, var(--moonlight));
+    border-radius: 3px;
+    position: relative;
+    box-shadow: 0 16px 40px rgba(10,5,20,0.5);
+  }
+  .envelope::before{
+    content:''; position:absolute; top:0; left:0;
+    width:0; height:0;
+    border-left: 105px solid transparent;
+    border-right: 105px solid transparent;
+    border-top: 68px solid #D8C4AC;
+  }
+  .seal{
+    position:absolute; top: 48px; left: 50%; transform: translateX(-50%);
+    width: 38px; height: 38px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #f0c98a, var(--gold-dim));
+    display:flex; align-items:center; justify-content:center;
+    color: var(--void); font-size: 16px; font-family:'Fraunces',serif;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+  }
+  #letter h2{ font-size: clamp(34px, 5vw, 50px); }
+  #letter .hint{ margin-top: 10px; font-size: 13px; color: var(--faint); margin-bottom: 40px; }
+
+  .letter-paper{
+    max-width: 560px;
+    background: linear-gradient(180deg, #FBF6EE, #F3E9D8);
+    border-radius: 4px;
+    padding: 46px 42px;
+    box-shadow: 0 24px 60px rgba(10,5,20,0.5);
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 2;
+    color: #3A2A2E;
+    text-align: left;
+    opacity: 0; max-height: 0; overflow:hidden;
+    transition: opacity 0.7s ease, max-height 0.9s ease;
+  }
+  .letter-paper.show{ opacity: 1; max-height: 1000px; }
+  #typedLine{ font-style: italic; }
+  #restOfLetter{ opacity: 0; transition: opacity 1s ease 1.4s; }
+  #restOfLetter.show{ opacity: 1; }
+  .letter-paper .sign{
+    display:block; margin-top: 26px;
+    font-family: 'Caveat', cursive; font-weight: 600;
+    font-size: 30px; color: var(--rose-dim);
+  }
+  .cursor-blink{ animation: blink 0.9s step-end infinite; }
+  @keyframes blink{ 50%{ opacity: 0; } }
+
+  /* FINALE */
+  #finale h2{
+    font-size: clamp(42px, 9vw, 90px);
+    background: linear-gradient(180deg, var(--gold), var(--rose));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  #finale p{ margin-top: 16px; color: var(--dim); max-width: 440px; }
+  #wishBtn{
+    margin-top: 44px;
+    padding: 17px 42px;
+    border-radius: 2px;
+    border: 1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.35s ease;
+  }
+  #wishBtn:hover{ background: var(--gold); color: var(--void); }
+  #wishNote{
+    margin-top: 26px;
+    font-size: 15px;
+    font-family: 'Caveat', cursive;
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  #wishNote.show{ opacity: 1; }
+
+  footer{
+    position: relative; z-index: 3;
+    text-align: center;
+    padding: 40px 24px 60px;
+    font-size: 12px;
+    color: var(--faint);
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 520px){
+    section{ padding: 90px 20px; }
+    .letter-paper{ padding: 32px 24px; font-size: 16px; }
+    #constellationWidget{ width: 62px; height: 62px; top: 16px; right: 16px; }
+    #musicWrap{ top: 16px; left: 16px; }
+    .doorScene{ height: 340px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+    html{ scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div id="skyGradient"></div>
+<canvas id="starsCanvas"></canvas>
+<canvas id="particleCanvas"></canvas>
+<div id="vignette"></div>
+<div id="progressBar"></div>
+
+<div id="musicWrap">
+  <button id="musicBtn" aria-label="Open our song">
+    <span class="note">&#9835;</span>
+    <span class="bars"><span></span><span></span><span></span></span>
+  </button>
+  <div id="musicLabel">our song</div>
+</div>
+
+<div id="constellationWidget" aria-hidden="true">
+  <svg viewBox="0 0 100 100">
+    <path d="M50,88 C20,65 5,45 5,28 C5,12 20,2 35,8 C42,11 47,18 50,25 C53,18 58,11 65,8 C80,2 95,12 95,28 C95,45 80,65 50,88 Z"
+      fill="none" stroke="rgba(246,238,227,0.15)" stroke-width="1.5"/>
+    <path id="heartPath" d="M50,88 C20,65 5,45 5,28 C5,12 20,2 35,8 C42,11 47,18 50,25 C53,18 58,11 65,8 C80,2 95,12 95,28 C95,45 80,65 50,88 Z"
+      fill="none" stroke="url(#heartGrad)" stroke-width="2" stroke-linecap="round"/>
+    <defs>
+      <linearGradient id="heartGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#E4BC7C"/>
+        <stop offset="100%" stop-color="#E39FB0"/>
+      </linearGradient>
+    </defs>
+    <circle id="heartStar" cx="50" cy="88" r="3" fill="#F6EEE3"/>
+  </svg>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="chapter-label reveal">i. where it begins</div>
+  <div class="kicker reveal d1">for my darling, mero budi</div>
+  <h1 class="reveal d1">happy birthday</h1>
+  <p class="sub reveal d2">Tonight the sky made room for one more story — yours. It starts years before you'd have guessed. Scroll down.</p>
+  <div class="scroll-cue reveal d3">scroll<div class="line"></div></div>
+</section>
+
+<!-- THE DOOR — school memory -->
+<section id="door">
+  <div class="chapter-label reveal">ii. the door</div>
+  <div class="doorScene reveal d1" id="doorScene" tabindex="0" role="button" aria-label="Open the door">
+    <div class="doorFrame">
+      <div class="hallLight"></div>
+      <div class="doorInner">
+        <div class="doorLeaf left"></div>
+        <div class="doorLeaf right"></div>
+      </div>
+      <div class="peekGap"></div>
+      <div class="eyeGlint"></div>
+    </div>
+  </div>
+  <h2 class="reveal d1">a gap in a door</h2>
+  <p class="hint reveal d2">tap the door</p>
+  <p id="doorMessage">Before I ever said a word to you, you already knew my class schedule better than I did. A batch above me — whenever your class let out early, you'd find your way to the small gap in my classroom door, just to look for me before I noticed you were there. I only found out much later, from someone who wasn't supposed to tell. By then I'd already started listening for footsteps outside that door, hoping.</p>
+</section>
+
+<!-- SPARK / GIFT -->
+<section id="spark">
+  <div class="chapter-label reveal">iii. the spark</div>
+  <div class="orb-wrap reveal d1" id="orbWrap">
+    <div class="orb"></div>
+  </div>
+  <h2 class="reveal d1">make a wish</h2>
+  <p class="hint reveal d2">touch the light</p>
+  <p id="sparkMessage">Every day with you feels like a gift I didn't know I needed, mero budi. Happy Birthday — here's to celebrating you today, and every quiet, ordinary day after.</p>
+</section>
+
+<!-- PASHUPATI — temple memory -->
+<section id="temple">
+  <div class="chapter-label reveal">iv. pashupati</div>
+  <svg class="templeSilhouette reveal d1" viewBox="0 0 360 140" aria-hidden="true">
+    <polygon points="180,10 205,40 155,40" fill="#2A1A16"/>
+    <rect x="145" y="40" width="70" height="14" fill="#2A1A16"/>
+    <polygon points="180,26 197,44 163,44" fill="#3A241E"/>
+    <rect x="150" y="54" width="60" height="70" fill="#231512"/>
+    <rect x="168" y="80" width="24" height="44" fill="#150F26"/>
+    <rect x="60" y="112" width="240" height="8" fill="#150F26"/>
+    <circle cx="90" cy="30" r="10" fill="#E8A24C" opacity="0.5"/>
+    <circle cx="270" cy="24" r="7" fill="#E4BC7C" opacity="0.4"/>
+  </svg>
+  <h2 class="reveal d1">the afternoon we walked too close</h2>
+  <p class="hint reveal d2">light the incense</p>
+  <div class="incense-wrap" id="incenseWrap" tabindex="0" role="button" aria-label="Light the incense">
+    <div class="incense-stick"></div>
+    <div class="incense-tip"></div>
+  </div>
+  <p id="templeText">I still think about that first walk up to Pashupati — the crowd, the smoke, the bells somewhere ahead of us. I kept finding reasons to walk closer than I needed to, until there was barely any space left between us at all. I remember the warmth of you right there beside me, the sun on the courtyard stones, your shoulder against mine like it belonged there. It's such a small memory, nothing anyone else would ever notice. I've carried it for years anyway.</p>
+  <p class="hint2" id="templeHint2">— tap again to let it burn a little longer</p>
+</section>
+
+<!-- CONSTELLATIONS -->
+<section id="reasons">
+  <div class="chapter-label reveal">v. constellations of you</div>
+  <h2 class="reveal d1">a few of the stars you are</h2>
+  <p class="sub-text reveal d2">tap a card to read its name</p>
+  <div class="cards" id="cards"></div>
+</section>
+
+<!-- KEEPSAKES -->
+<section id="memories">
+  <div class="chapter-label reveal">vi. keepsakes</div>
+  <h2 class="reveal d1">our little moments</h2>
+  <div style="height:14px"></div>
+  <div class="polaroids" id="polaroids"></div>
+  <p class="memo-note reveal d2">(placeholders for now — send me our real photos and I'll set them here)</p>
+</section>
+
+<!-- LETTER -->
+<section id="letter">
+  <div class="chapter-label reveal">vii. the letter</div>
+  <div class="envelope-wrap reveal d1" id="envelopeWrap">
+    <div class="envelope"><div class="seal">&#9825;</div></div>
+  </div>
+  <h2 class="reveal d1">a letter for you</h2>
+  <p class="hint reveal d2">open when you're ready</p>
+  <div class="letter-paper" id="letterPaper">
+    <span id="typedLine"></span><span class="cursor-blink" id="cursor">|</span>
+    <div id="restOfLetter">
+      <br><br>
+      I wanted today to have something made just for you — not perfect, but made with a lot of care, the way you deserve.
+      I think about that gap in the classroom door more than I probably should, and about Pashupati, and about every ordinary day since that somehow still feels like the first one.
+      Thank you for finding your way to me back then, and for staying close ever since. Thank you for putting up with me on the days I don't make it easy.
+      I hope this year brings you everything you're quietly hoping for, and a few things you haven't even thought to hope for yet.
+      <br><br>
+      Happy Birthday, mero budi. I love you more than this page can hold.
+      <span class="sign">always yours</span>
+    </div>
+  </div>
+</section>
+
+<!-- FINALE -->
+<section id="finale">
+  <div class="chapter-label reveal">viii. the wish</div>
+  <h2 class="reveal d1">Happy Birthday</h2>
+  <p class="reveal d2">Here's to you, darling — today, and every year after.</p>
+  <button id="wishBtn" class="reveal d3">make a wish</button>
+  <p id="wishNote">wherever you are, I hope you felt that.</p>
+</section>
+
+<footer>made with love, under a borrowed sky</footer>
+
+<script>
+/* ================= CONFIG ================= */
+const SONG_URL = "https://youtu.be/QKyFheGmuvU";
+
+/* ================= SCROLL PROGRESS + CONSTELLATION ================= */
+const progressBar = document.getElementById('progressBar');
+const heartPath = document.getElementById('heartPath');
+const heartStar = document.getElementById('heartStar');
+const totalLen = heartPath.getTotalLength();
+heartPath.style.strokeDasharray = totalLen;
+heartPath.style.strokeDashoffset = totalLen;
+
+function updateScrollFx(){
+  const scrollTop = window.scrollY;
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = Math.min(1, Math.max(0, scrollTop / max));
+  progressBar.style.width = (progress * 100) + '%';
+  heartPath.style.strokeDashoffset = totalLen * (1 - progress);
+  const pt = heartPath.getPointAtLength(progress * totalLen);
+  heartStar.setAttribute('cx', pt.x);
+  heartStar.setAttribute('cy', pt.y);
+}
+window.addEventListener('scroll', () => requestAnimationFrame(updateScrollFx));
+updateScrollFx();
+
+/* ================= SECTION REVEAL ================= */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('in-view');
+  });
+}, { threshold: 0.25 });
+document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+/* ================= AMBIENT STARFIELD ================= */
+const starsCanvas = document.getElementById('starsCanvas');
+const sctx = starsCanvas.getContext('2d');
+function resizeStars(){
+  starsCanvas.width = window.innerWidth;
+  starsCanvas.height = window.innerHeight;
+}
+resizeStars();
+window.addEventListener('resize', resizeStars);
+
+const STAR_COUNT = 110;
+const stars = Array.from({length: STAR_COUNT}, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  r: Math.random() * 1.3 + 0.3,
+  phase: Math.random() * Math.PI * 2,
+  speed: 0.01 + Math.random() * 0.02
+}));
+
+let mouseX = 0, mouseY = 0;
+window.addEventListener('mousemove', (e) => {
+  mouseX = (e.clientX / window.innerWidth - 0.5);
+  mouseY = (e.clientY / window.innerHeight - 0.5);
+});
+
+function drawStars(t){
+  sctx.clearRect(0,0,starsCanvas.width, starsCanvas.height);
+  stars.forEach(s => {
+    const twinkle = 0.5 + 0.5 * Math.sin(t * s.speed + s.phase);
+    sctx.globalAlpha = 0.25 + twinkle * 0.6;
+    sctx.fillStyle = '#F6EEE3';
+    sctx.beginPath();
+    sctx.arc(s.x + mouseX * 8, s.y + mouseY * 8, s.r, 0, Math.PI*2);
+    sctx.fill();
+  });
+  sctx.globalAlpha = 1;
+  requestAnimationFrame(drawStars);
+}
+requestAnimationFrame(drawStars);
+
+/* ================= PARTICLE BURST SYSTEM (stars) ================= */
+const pCanvas = document.getElementById('particleCanvas');
+const pctx = pCanvas.getContext('2d');
+function resizeParticles(){
+  pCanvas.width = window.innerWidth;
+  pCanvas.height = window.innerHeight;
+}
+resizeParticles();
+window.addEventListener('resize', resizeParticles);
+
+let particles = [];
+const burstColors = ['#E4BC7C', '#E39FB0', '#F6EEE3'];
+
+function spawnStarParticle(x, y, opts={}){
+  const angle = opts.angle !== undefined ? opts.angle : Math.random() * Math.PI * 2;
+  const speed = opts.speed !== undefined ? opts.speed : 1.5 + Math.random() * 4;
+  particles.push({
+    x, y,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    size: opts.size || (2 + Math.random() * 3),
+    color: opts.color || burstColors[Math.floor(Math.random()*burstColors.length)],
+    life: 0,
+    gravity: opts.gravity !== undefined ? opts.gravity : 0.05,
+    maxLife: opts.maxLife || (70 + Math.random() * 40),
+    shape: opts.shape || 'star'
+  });
+}
+function burst(x, y, count){
+  for (let i=0; i<count; i++) spawnStarParticle(x, y);
+}
+function smokeWisp(x, y){
+  spawnStarParticle(x, y, {
+    angle: -Math.PI/2 + (Math.random()-0.5)*0.6,
+    speed: 0.3 + Math.random()*0.5,
+    size: 1.5 + Math.random()*2,
+    color: 'rgba(246,238,227,0.5)',
+    gravity: -0.008,
+    maxLife: 140 + Math.random()*60,
+    shape: 'dot'
+  });
+}
+
+function drawStarShape(ctx, x, y, size, color){
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  for (let i=0; i<5; i++){
+    const angle = (i * 2 * Math.PI / 5) - Math.PI/2;
+    const outerX = Math.cos(angle) * size;
+    const outerY = Math.sin(angle) * size;
+    const innerAngle = angle + Math.PI/5;
+    const innerX = Math.cos(innerAngle) * size * 0.4;
+    const innerY = Math.sin(innerAngle) * size * 0.4;
+    if (i===0) ctx.moveTo(outerX, outerY); else ctx.lineTo(outerX, outerY);
+    ctx.lineTo(innerX, innerY);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function animateParticles(){
+  pctx.clearRect(0,0,pCanvas.width, pCanvas.height);
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += p.gravity;
+    p.life++;
+    const alpha = Math.max(0, 1 - p.life / p.maxLife);
+    pctx.globalAlpha = alpha;
+    if (p.shape === 'dot'){
+      pctx.fillStyle = p.color;
+      pctx.beginPath();
+      pctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+      pctx.fill();
+    } else {
+      drawStarShape(pctx, p.x, p.y, p.size, p.color);
+    }
+  });
+  pctx.globalAlpha = 1;
+  particles = particles.filter(p => p.life < p.maxLife);
+  requestAnimationFrame(animateParticles);
+}
+requestAnimationFrame(animateParticles);
+
+/* ================= MUSIC TOGGLE ================= */
+const musicBtn = document.getElementById('musicBtn');
+const musicLabel = document.getElementById('musicLabel');
+let playing = false;
+musicBtn.addEventListener('click', () => {
+  if (!SONG_URL) {
+    playing = !playing;
+    musicBtn.classList.toggle('playing', playing);
+    return;
+  }
+  playing = !playing;
+  musicBtn.classList.toggle('playing', playing);
+  musicLabel.textContent = playing ? 'playing' : 'our song';
+  window.open(SONG_URL, '_blank');
+});
+
+/* ================= THE DOOR ================= */
+const doorScene = document.getElementById('doorScene');
+const doorMessage = document.getElementById('doorMessage');
+let doorOpened = false;
+function openDoor(){
+  doorScene.classList.toggle('peeking');
+  if (!doorOpened){
+    doorOpened = true;
+    doorMessage.classList.add('show');
+  }
+  const rect = doorScene.getBoundingClientRect();
+  burst(rect.left + rect.width/2, rect.top + rect.height*0.35, 18);
+}
+doorScene.addEventListener('click', openDoor);
+doorScene.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' ') openDoor(); });
+
+/* ================= GIFT / SPARK ================= */
+const orbWrap = document.getElementById('orbWrap');
+const sparkMessage = document.getElementById('sparkMessage');
+function openSpark(){
+  if (orbWrap.classList.contains('opened')) return;
+  orbWrap.classList.add('opened');
+  const rect = orbWrap.getBoundingClientRect();
+  burst(rect.left + rect.width/2, rect.top + rect.height/2, 60);
+  sparkMessage.classList.add('show');
+}
+orbWrap.addEventListener('click', openSpark);
+orbWrap.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' ') openSpark(); });
+orbWrap.tabIndex = 0;
+orbWrap.setAttribute('role','button');
+orbWrap.setAttribute('aria-label','Open the light');
+
+/* ================= PASHUPATI INCENSE ================= */
+const incenseWrap = document.getElementById('incenseWrap');
+const templeText = document.getElementById('templeText');
+const templeHint2 = document.getElementById('templeHint2');
+let incenseInterval = null;
+let incenseLit = false;
+
+function lightIncense(){
+  incenseWrap.classList.add('lit');
+  templeText.classList.add('show');
+  if (!incenseLit){
+    incenseLit = true;
+    const rect = incenseWrap.getBoundingClientRect();
+    const tipX = rect.left + rect.width/2;
+    const tipY = rect.top + 26;
+    incenseInterval = setInterval(() => smokeWisp(tipX, tipY), 220);
+  } else {
+    templeHint2.classList.add('show');
+  }
+}
+incenseWrap.addEventListener('click', lightIncense);
+incenseWrap.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' ') lightIncense(); });
+
+/* ================= CONSTELLATION CARDS ================= */
+const starGlyphs = [
+  '<svg viewBox="0 0 40 40"><circle cx="8" cy="30" r="2" fill="#E4BC7C"/><circle cx="20" cy="10" r="2" fill="#E4BC7C"/><circle cx="32" cy="26" r="2" fill="#E4BC7C"/><line x1="8" y1="30" x2="20" y2="10" stroke="#E4BC7C" stroke-width="0.6"/><line x1="20" y1="10" x2="32" y2="26" stroke="#E4BC7C" stroke-width="0.6"/></svg>',
+  '<svg viewBox="0 0 40 40"><circle cx="10" cy="12" r="2" fill="#E39FB0"/><circle cx="26" cy="8" r="2" fill="#E39FB0"/><circle cx="32" cy="24" r="2" fill="#E39FB0"/><circle cx="14" cy="30" r="2" fill="#E39FB0"/><line x1="10" y1="12" x2="26" y2="8" stroke="#E39FB0" stroke-width="0.6"/><line x1="26" y1="8" x2="32" y2="24" stroke="#E39FB0" stroke-width="0.6"/><line x1="32" y1="24" x2="14" y2="30" stroke="#E39FB0" stroke-width="0.6"/></svg>',
+  '<svg viewBox="0 0 40 40"><circle cx="20" cy="6" r="2" fill="#F6EEE3"/><circle cx="8" cy="22" r="2" fill="#F6EEE3"/><circle cx="32" cy="22" r="2" fill="#F6EEE3"/><circle cx="20" cy="34" r="2" fill="#F6EEE3"/><line x1="20" y1="6" x2="8" y2="22" stroke="#F6EEE3" stroke-width="0.6"/><line x1="20" y1="6" x2="32" y2="22" stroke="#F6EEE3" stroke-width="0.6"/><line x1="8" y1="22" x2="20" y2="34" stroke="#F6EEE3" stroke-width="0.6"/><line x1="32" y1="22" x2="20" y2="34" stroke="#F6EEE3" stroke-width="0.6"/></svg>',
+  '<svg viewBox="0 0 40 40"><circle cx="6" cy="8" r="2" fill="#E4BC7C"/><circle cx="22" cy="16" r="2" fill="#E4BC7C"/><circle cx="34" cy="10" r="2" fill="#E4BC7C"/><circle cx="18" cy="32" r="2" fill="#E4BC7C"/><line x1="6" y1="8" x2="22" y2="16" stroke="#E4BC7C" stroke-width="0.6"/><line x1="22" y1="16" x2="34" y2="10" stroke="#E4BC7C" stroke-width="0.6"/><line x1="22" y1="16" x2="18" y2="32" stroke="#E4BC7C" stroke-width="0.6"/></svg>',
+  '<svg viewBox="0 0 40 40"><circle cx="10" cy="30" r="2" fill="#E39FB0"/><circle cx="14" cy="14" r="2" fill="#E39FB0"/><circle cx="28" cy="6" r="2" fill="#E39FB0"/><circle cx="32" cy="20" r="2" fill="#E39FB0"/><line x1="10" y1="30" x2="14" y2="14" stroke="#E39FB0" stroke-width="0.6"/><line x1="14" y1="14" x2="28" y2="6" stroke="#E39FB0" stroke-width="0.6"/><line x1="28" y1="6" x2="32" y2="20" stroke="#E39FB0" stroke-width="0.6"/></svg>',
+  '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="2.5" fill="#F6EEE3"/><circle cx="8" cy="10" r="1.6" fill="#F6EEE3"/><circle cx="32" cy="10" r="1.6" fill="#F6EEE3"/><circle cx="8" cy="30" r="1.6" fill="#F6EEE3"/><circle cx="32" cy="30" r="1.6" fill="#F6EEE3"/><line x1="20" y1="20" x2="8" y2="10" stroke="#F6EEE3" stroke-width="0.5"/><line x1="20" y1="20" x2="32" y2="10" stroke="#F6EEE3" stroke-width="0.5"/><line x1="20" y1="20" x2="8" y2="30" stroke="#F6EEE3" stroke-width="0.5"/><line x1="20" y1="20" x2="32" y2="30" stroke="#F6EEE3" stroke-width="0.5"/></svg>'
+];
+
+const reasons = [
+  { name: 'the door-watcher', text: 'the girl who peeked through a classroom door gap before I even knew her name' },
+  { name: 'the warmth', text: 'the way you make even a boring morning feel warmer' },
+  { name: 'the temple walk', text: 'how ordinary streets became something worth remembering, just because you were beside me' },
+  { name: 'the safety', text: 'how safe it feels to just be myself around you' },
+  { name: 'the showing up', text: 'you show up for me even on the hard days' },
+  { name: 'the whole of you', text: 'honestly — just you, exactly as you are, mero budi' },
+];
+
+const cardsWrap = document.getElementById('cards');
+reasons.forEach((r, i) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.tabIndex = 0;
+  card.setAttribute('role','button');
+  card.innerHTML = `
+    <div class="card-inner">
+      <div class="card-face card-front">${starGlyphs[i]}<span class="star-name">${r.name}</span></div>
+      <div class="card-face card-back"><p>${r.text}</p></div>
+    </div>`;
+  const flip = () => card.classList.toggle('flipped');
+  card.addEventListener('click', flip);
+  card.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' ') flip(); });
+  cardsWrap.appendChild(card);
+});
+
+/* ================= MEMORY PLACEHOLDERS ================= */
+const memIcon = '<svg viewBox="0 0 40 40" fill="none" stroke="#F6EEE3" stroke-width="1"><path d="M20,34 C10,26 4,18 4,12 C4,6 9,2 14,4 C17,5 19,8 20,10 C21,8 23,5 26,4 C31,2 36,6 36,12 C36,18 30,26 20,34 Z"/></svg>';
+const memories = [
+  { cap: 'the door', r: '-4deg' },
+  { cap: 'pashupati', r: '3deg' },
+  { cap: 'our usual spot', r: '-2deg' },
+  { cap: 'add a photo here', r: '4deg' },
+];
+const polaroidsWrap = document.getElementById('polaroids');
+memories.forEach(m => {
+  const p = document.createElement('div');
+  p.className = 'polaroid';
+  p.style.setProperty('--r', m.r);
+  p.innerHTML = `<div class="tape"></div><div class="frame">${memIcon}</div><span class="cap">${m.cap}</span>`;
+  polaroidsWrap.appendChild(p);
+});
+
+/* ================= LETTER ================= */
+const envelopeWrap = document.getElementById('envelopeWrap');
+const letterPaper = document.getElementById('letterPaper');
+const typedLine = document.getElementById('typedLine');
+const restOfLetter = document.getElementById('restOfLetter');
+const cursor = document.getElementById('cursor');
+const fullFirstLine = "Mero Budi,";
+let typed = false;
+
+function openLetter(){
+  const willShow = !letterPaper.classList.contains('show');
+  letterPaper.classList.toggle('show');
+  if (willShow && !typed){
+    typed = true;
+    let i = 0;
+    const interval = setInterval(() => {
+      typedLine.textContent = fullFirstLine.slice(0, i+1);
+      i++;
+      if (i >= fullFirstLine.length){
+        clearInterval(interval);
+        cursor.style.display = 'none';
+        restOfLetter.classList.add('show');
+      }
+    }, 90);
+  }
+}
+envelopeWrap.tabIndex = 0;
+envelopeWrap.setAttribute('role','button');
+envelopeWrap.setAttribute('aria-label','Open the letter');
+envelopeWrap.addEventListener('click', openLetter);
+envelopeWrap.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' ') openLetter(); });
+
+/* ================= FINALE: SHOOTING STAR + WISH BURST ================= */
+function shootingStar(){
+  const startX = -50;
+  const startY = window.innerHeight * (0.15 + Math.random()*0.2);
+  const endX = window.innerWidth + 50;
+  const endY = startY + window.innerHeight * 0.35;
+  const duration = 1100;
+  const startTime = performance.now();
+
+  function frame(now){
+    const t = Math.min(1, (now - startTime) / duration);
+    const x = startX + (endX - startX) * t;
+    const y = startY + (endY - startY) * t;
+    pctx.save();
+    pctx.globalAlpha = 1 - t*0.3;
+    pctx.strokeStyle = '#F6EEE3';
+    pctx.lineWidth = 2;
+    pctx.beginPath();
+    pctx.moveTo(x, y);
+    pctx.lineTo(x - 60, y - 24);
+    pctx.stroke();
+    pctx.restore();
+    if (t < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+const wishNote = document.getElementById('wishNote');
+document.getElementById('wishBtn').addEventListener('click', (e) => {
+  const rect = e.target.getBoundingClientRect();
+  burst(rect.left + rect.width/2, rect.top, 90);
+  shootingStar();
+  setTimeout(shootingStar, 350);
+  wishNote.classList.add('show');
+});
+</script>
+
+</body>
+</html>
