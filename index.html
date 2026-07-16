@@ -575,6 +575,7 @@
   </button>
   <div id="musicLabel">our song</div>
 </div>
+<audio id="bgMusic" src="song.mp3" loop></audio>
 
 <div id="constellationWidget" aria-hidden="true">
   <svg viewBox="0 0 100 100">
@@ -705,9 +706,6 @@
 <footer>made with love, under a borrowed sky</footer>
 
 <script>
-/* ================= CONFIG ================= */
-const SONG_URL = "https://youtu.be/QKyFheGmuvU";
-
 /* ================= SCROLL PROGRESS + CONSTELLATION ================= */
 const progressBar = document.getElementById('progressBar');
 const heartPath = document.getElementById('heartPath');
@@ -867,17 +865,17 @@ requestAnimationFrame(animateParticles);
 /* ================= MUSIC TOGGLE ================= */
 const musicBtn = document.getElementById('musicBtn');
 const musicLabel = document.getElementById('musicLabel');
+const bgMusic = document.getElementById('bgMusic');
 let playing = false;
 musicBtn.addEventListener('click', () => {
-  if (!SONG_URL) {
-    playing = !playing;
-    musicBtn.classList.toggle('playing', playing);
-    return;
-  }
   playing = !playing;
   musicBtn.classList.toggle('playing', playing);
   musicLabel.textContent = playing ? 'playing' : 'our song';
-  window.open(SONG_URL, '_blank');
+  if (playing) {
+    bgMusic.play();
+  } else {
+    bgMusic.pause();
+  }
 });
 
 /* ================= THE DOOR ================= */
